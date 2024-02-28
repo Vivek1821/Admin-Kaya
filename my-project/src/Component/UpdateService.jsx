@@ -1,126 +1,166 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-const AdminServiceEditor = ({ services, updateService }) => {
-  const [selectedServiceId, setSelectedServiceId] = useState(null);
-  const [updatedService, setUpdatedService] = useState({
-    title: "",
-    subpoints: [],
-  });
+const ServiceSelector = () => {
+  const [services, setServices] = useState([]);
+  const [selectedService, setSelectedService] = useState(null);
+  const [showForm, setShowForm] = useState(false);
+  const [details, setDetails] = useState("");
+  const [title, setTitle] = useState("");
+  const [icon, setIcon] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
-  const handleServiceChange = (event) => {
-    const selectedId = parseInt(event.target.value);
-    setSelectedServiceId(selectedId);
+  // Fetch services from the API
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const response = await fetch(
+          "https://65dcb4ebe7edadead7ecbc41.mockapi.io/api/immigration/services"
+        );
+        if (response.ok) {
+          const data = await response.json();
+          setServices(data);
+        } else {
+          console.error("Failed to fetch services:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
 
-    // Retrieve the selected service details
-    const selectedService = services?.find(
-      (service) => service.id === selectedId
-    );
+    fetchServices();
+  }, []);
 
-    // Set the initial state of the updated service
-    setUpdatedService({
-      title: selectedService ? selectedService.title : "",
-      subpoints: selectedService ? [...selectedService.subpoints] : [],
-    });
+  // Function to handle service selection
+  const handleServiceSelect = (service) => {
+    setSelectedService(service);
+    setShowForm(true);
+    setDetails(service.details); // Pre-fill the form with current details
+    setTitle(service.title); // Pre-fill the form with current title
+    setIcon(service.icon); // Pre-fill the form with current icon
   };
 
-  const handleInputChange = (index, value) => {
-    const updatedSubpoints = [...updatedService.subpoints];
-    updatedSubpoints[index] = value;
+  // Function to handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(
+        `https://65dcb4ebe7edadead7ecbc41.mockapi.io/api/immigration/services/${selectedService.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            title,
+            details,
+            icon,
+            id: selectedService.id,
+          }),
+        }
+      );
 
-    setUpdatedService({
-      ...updatedService,
-      subpoints: updatedSubpoints,
-    });
-  };
-
-  const handleUpdateService = () => {
-    if (selectedServiceId !== null) {
-      // Update the service with the new data
-      updateService(selectedServiceId, updatedService);
-
-      // Reset the selected service and updated data
-      setSelectedServiceId(null);
-      setUpdatedService({
-        title: "",
-        subpoints: [],
-      });
+      if (response.ok) {
+        console.log("Service details updated successfully!");
+        setSuccessMessage("Service details updated successfully!");
+        // Reset form fields
+        setTitle("");
+        setDetails("");
+        setIcon("");
+        // Hide success message after 3 seconds
+        setTimeout(() => {
+          setSuccessMessage("");
+        }, 3000);
+      } else {
+        console.error("Failed to update service details:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error:", error);
     }
   };
 
   return (
-    <div className="container ">
-      <h2 className="text-2xl font-bold mb-4 text-gray-800">
-        Service Data Update
-      </h2>
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-600">
+    <div className="max-w-md mx-auto bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+      <div>
+        <label className="block text-gray-700 text-sm font-bold mb-2">
           Select Service:
         </label>
         <select
-          value={selectedServiceId || ""}
-          onChange={handleServiceChange}
-          className="mt-1 p-2 border border-gray-300 rounded-md w-48 focus:outline-none focus:ring focus:border-blue-300"
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          onChange={(e) => handleServiceSelect(JSON.parse(e.target.value))}
         >
-          <option value="" disabled>
-            Select a service
+          <option value="" disabled selected>
+            Select a service...
           </option>
-          {services?.map((service) => (
-            <option key={service.id} value={service.id}>
+          {services.map((service) => (
+            <option key={service.id} value={JSON.stringify(service)}>
               {service.title}
             </option>
           ))}
         </select>
       </div>
-      {selectedServiceId !== null && (
-        <div>
+      {showForm && (
+        <form onSubmit={handleSubmit} className="mt-4">
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-600">
-              Service Title:
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="title"
+            >
+              Title:
             </label>
             <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="title"
               type="text"
-              value={updatedService.title}
-              onChange={(e) =>
-                setUpdatedService({ ...updatedService, title: e.target.value })
-              }
-              className="mt-1 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring focus:border-blue-300"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
             />
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-600">
-              Subpoints:
-            </label>
-            {updatedService.subpoints?.map((subpoint, index) => (
-              <input
-                key={index}
-                type="text"
-                value={subpoint}
-                onChange={(e) => handleInputChange(index, e.target.value)}
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full mb-2 focus:outline-none focus:ring focus:border-blue-300"
-              />
-            ))}
-            <button
-              onClick={() =>
-                setUpdatedService({
-                  ...updatedService,
-                  subpoints: [...updatedService.subpoints, ""],
-                })
-              }
-              className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none"
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="details"
             >
-              Add Subpoint
-            </button>
+              Details:
+            </label>
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="details"
+              type="text"
+              value={details}
+              onChange={(e) => setDetails(e.target.value)}
+              required
+            />
+          </div>
+          <div className="mb-6">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="icon"
+            >
+              Icon:
+            </label>
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="icon"
+              type="text"
+              value={icon}
+              onChange={(e) => setIcon(e.target.value)}
+              required
+            />
           </div>
           <button
-            onClick={handleUpdateService}
-            className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 focus:outline-none"
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="submit"
           >
-            Update Service
+            Update Details
           </button>
-        </div>
+        </form>
+      )}
+      {successMessage && (
+        <div className="text-green-600 font-bold mt-2">{successMessage}</div>
       )}
     </div>
   );
 };
 
-export default AdminServiceEditor;
+export default ServiceSelector;
