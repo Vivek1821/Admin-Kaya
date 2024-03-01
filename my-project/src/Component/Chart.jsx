@@ -17,14 +17,25 @@ const Chart = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "https://65dcb4ebe7edadead7ecbc41.mockapi.io/api/immigration/services"
+          "https://65e09bb8d3db23f76249b70d.mockapi.io/userinfo"
         );
         const data = await response.json();
-        // Extracting titles and values from the API response
-        const extractedData = data.map((item) => ({
-          x: item.title,
-          y: 30,
-        }));
+
+        // Count occurrences of each immigration service type
+        const serviceCounts = {};
+        data.forEach((item) => {
+          const service = item.immigration_service;
+          serviceCounts[service] = (serviceCounts[service] || 0) + 1;
+        });
+
+        // Convert serviceCounts object to an array of objects with x and y properties
+        const extractedData = Object.entries(serviceCounts).map(
+          ([service, count]) => ({
+            x: service,
+            y: count,
+          })
+        );
+
         setServiceData(extractedData);
       } catch (error) {
         console.error("Error fetching data:", error);
