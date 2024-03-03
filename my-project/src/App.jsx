@@ -12,15 +12,15 @@ import "./App.css";
 function App() {
   return (
     <div className="app-container ">
-      <div className="sidebar">
+      <div className="sidebar fixed h-full w-1/5">
         <Sidebar />
       </div>
 
-      <div className="flex flex-col w-full">
+      <div className="content flex flex-col">
         <div className="justify-end items-end p-5">
           <Home />
         </div>
-        <div className="content">
+        <div className="sub-content">
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/immigration" element={<Immigration />} />

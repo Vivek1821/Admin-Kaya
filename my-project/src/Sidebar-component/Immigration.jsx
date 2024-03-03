@@ -5,7 +5,7 @@ const ImmigrationForm = () => {
   const [formData, setFormData] = useState({
     imageURL: "",
     details: "",
-    title: "",
+    titles: "",
   });
   const [submitMessage, setSubmitMessage] = useState("");
 
@@ -37,7 +37,7 @@ const ImmigrationForm = () => {
         setFormData({
           imageURL: "",
           details: "",
-          title: "",
+          titles: "",
         });
         // Refresh page
         window.location.reload();
@@ -64,7 +64,7 @@ const ImmigrationForm = () => {
                 type="text"
                 id="title"
                 name="title"
-                value={formData.title}
+                value={formData.titles}
                 onChange={handleChange}
                 className="border-gray-800 border-b-2 focus:border-blue-500 focus:ring-blue-500 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-full"
               />

@@ -17,7 +17,7 @@ const Chart = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "https://65e09bb8d3db23f76249b70d.mockapi.io/userinfo"
+          "https://65e40f7388c4088649f63c58.mockapi.io/kayaadmin/users"
         );
         const data = await response.json();
 

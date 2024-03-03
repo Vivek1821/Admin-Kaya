@@ -7,7 +7,7 @@ const Users = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "https://65e09bb8d3db23f76249b70d.mockapi.io/userinfo"
+          "https://65e40f7388c4088649f63c58.mockapi.io/kayaadmin/users"
         );
         if (!response.ok) {
           throw new Error("Failed to fetch user data");
@@ -67,12 +67,48 @@ const Users = () => {
                     >
                       Password
                     </th>
-                    {/* <th
+                    <th
                       scope="col"
-                      className="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase"
+                      className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase"
                     >
-                      Action
-                    </th> */}
+                      Age
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase"
+                    >
+                      Gender
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase"
+                    >
+                      Preferred Country
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase"
+                    >
+                      Residence Country
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase"
+                    >
+                      Occupation
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase"
+                    >
+                      Marital Status
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase"
+                    >
+                      ID
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -101,14 +137,27 @@ const Users = () => {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
                         {user.password}
                       </td>
-                      {/* <td className="px-6 py-4 whitespace-nowrap text-end text-sm font-medium">
-                        <button
-                          type="button"
-                          className="inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent disabled:opacity-50 disabled:pointer-events-none text-blue-500 hover:text-blue-400 focus:outline-none focus:ring-1 focus:ring-gray-600"
-                        >
-                          Delete
-                        </button>
-                      </td> */}
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+                        {user.age}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+                        {user.gender}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+                        {user.preferred_country}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+                        {user.residence_country}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+                        {user.occupation}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+                        {user.marital_status}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+                        {user.id}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
