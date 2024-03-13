@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import { VictoryPie } from "victory";
 import CardContainer from "./CardContainer";
 import AppointmentData from "./AppointmentData";
+import { AgeGroupChart } from "./Charts/AgeChart";
+import { GenderChart } from "./Charts/GenderChart";
+import { ImmigrationTypeChart } from "./Charts/ImmigrationTypeChart";
 
 const Chart = () => {
   const [serviceData, setServiceData] = useState([]);
@@ -46,9 +49,9 @@ const Chart = () => {
   }, []);
 
   return (
-    <div className="flex justify-start w-96 gap-2">
-      <div className="bg-white rounded-lg shadow-2xl p-6">
-        <div className="text-xl font-bold mb-4">User Data</div>
+    <div className="flex justify-start w-80 h-[80-vh] gap-2">
+      <div className="bg-white rounded-lg shadow-2xl p-6 border-[1px] border-black mb-2">
+        <div className="text-xl font-bold mb-4">Service</div>
         <div className="flex flex-col">
           <div className="w-72">
             <VictoryPie
@@ -71,8 +74,15 @@ const Chart = () => {
         </div>
       </div>
       <div className="w-[50vw] gap-4 ">
-        <CardContainer />
-        <AppointmentData />
+        {/* <CardContainer /> */}
+        <div className="flex gap-2 ml-4 mb-4">
+          <ImmigrationTypeChart />
+          <AgeGroupChart />
+          <GenderChart />
+        </div>
+        <div className="mb-6">
+          <AppointmentData />
+        </div>
       </div>
     </div>
   );

@@ -23,6 +23,9 @@ const AppointmentData = () => {
 
   return (
     <div className="text-black w-full overflow-hidden border-[1px] border-black rounded-xl ml-4">
+      <div className="ml-4 border-b-2 p-2 text-lg font-semibold">
+        Client Appointment
+      </div>
       <div className="flex flex-col">
         <div className="-m-1.5 overflow-x-auto">
           <div className="p-1.5 min-w-full inline-block align-middle">

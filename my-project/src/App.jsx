@@ -17,9 +17,6 @@ function App() {
       </div>
 
       <div className="content flex flex-col">
-        <div className="justify-end items-end p-5">
-          <Home />
-        </div>
         <div className="sub-content">
           <Routes>
             <Route path="/" element={<Dashboard />} />
