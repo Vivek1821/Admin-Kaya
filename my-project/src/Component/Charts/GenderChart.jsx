@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { VictoryPie } from "victory";
+import { VictoryPie, VictoryLabel } from "victory";
 import fetchDataAndProcess from "../FetchData/FetchData";
 
 export const GenderChart = () => {
@@ -14,6 +14,7 @@ export const GenderChart = () => {
 
   useEffect(() => {
     const fetchGenderData = async () => {
+      // Assumed fetchDataAndProcess provides { x: "Category", y: count } structure
       const data = await fetchDataAndProcess(
         "https://65e40f7388c4088649f63c58.mockapi.io/kayaadmin/users",
         "gender"
@@ -24,23 +25,46 @@ export const GenderChart = () => {
     fetchGenderData();
   }, []);
 
+  // Calculate the total count
+  const getTotalCount = () => {
+    return genderData.reduce((acc, item) => acc + item.y, 0);
+  };
+
+  // Calculate the percentage
+  const getPercentage = (count) => {
+    const totalCount = getTotalCount();
+    return totalCount > 0 ? `${((count / totalCount) * 100).toFixed(1)}%` : '';
+  };
+
   return (
-    <div className="chart-container w-60 border-[1px] border-black rounded-xl">
-      <div className="chart-title p-2">Gender</div>
+    <div className="chart-container w-60 border-[1px] border-black rounded-xl mx-auto">
+      <div className="chart-title p-2 text-center">Gender Distribution</div>
       <div className="chart">
         <VictoryPie
           colorScale={colorScale}
-          data={genderData}
-          style={{ width: "300px", height: "300px" }}
+          data={genderData.map((item) => ({
+            x: item.x,
+            y: item.y,
+            label: getPercentage(item.y),
+          }))}
+          labelComponent={
+            <VictoryLabel
+              style={{ fill: "white", fontSize: "20px" }}
+            />
+          }
+          labelRadius={({ innerRadius }) => innerRadius + 10}
+          style={{
+            parent: { hidth: "250px", height: "250px" }
+          }}
         />
-        <div className="legend">
+        <div className="legend ml-2">
           {genderData.map((item, index) => (
-            <div key={index} className="legend-item flex gap-2 ml-2">
+            <div key={index} className="legend-item flex items-center mb-1">
               <div
                 className="legend-color w-4 h-4 rounded-full mr-2"
-                style={{ backgroundColor: colorScale[index] }}
+                style={{ backgroundColor: colorScale[index % colorScale.length] }}
               ></div>
-              <span className="ml-2 text-sm">{item.x}</span>
+              <span className="text-sm">{item.x}</span>
             </div>
           ))}
         </div>

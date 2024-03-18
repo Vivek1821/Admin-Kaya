@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { VictoryPie } from "victory";
+import { VictoryPie, VictoryLabel } from "victory";
 
 export const AgeGroupChart = () => {
   const [ageData, setAgeData] = useState([]);
@@ -36,17 +36,19 @@ export const AgeGroupChart = () => {
           } else if (age >= 46 && age <= 60) {
             ageGroups["46-60"]++;
           } else {
-            ageGroups["61"]++;
+            ageGroups["61-100"]++;
           }
         });
 
-        // Convert ageGroups object to an array of objects with x and y properties
-        const extractedData = Object.entries(ageGroups).map(
-          ([group, count]) => ({
-            x: group,
-            y: count,
-          })
-        );
+        // Calculate the total count
+        const totalCount = Object.values(ageGroups).reduce((acc, count) => acc + count, 0);
+
+        // Convert ageGroups object to an array of objects with x and y properties and include the label
+        const extractedData = Object.entries(ageGroups).map(([group, count]) => ({
+          x: group,
+          y: count,
+          label: `${((count / totalCount) * 100).toFixed(0)}%`,  // Calculate the percentage and round it
+        }));
 
         setAgeData(extractedData);
       } catch (error) {
@@ -59,21 +61,26 @@ export const AgeGroupChart = () => {
 
   return (
     <div className="chart-container w-60 border-[1px] border-black rounded-xl">
-      <div className=" p-2">Age Group</div>
+      <div className="p-2">Age Group</div>
       <div className="chart">
         <VictoryPie
           colorScale={colorScale}
           data={ageData}
-          style={{ width: "300px", height: "300px" }}
+          labelComponent={<VictoryLabel dy={-10}/>}  // Adjust label position inside the slices
+          labelRadius={({ innerRadius }) => innerRadius + 30 }  // Distance label from the center of the pie
+          style={{
+            labels: { fontSize: 20, fill: "white" },  // Style for labels
+            parent: { width: "250px", height: "250px" }  // Use maxWidth for responsive design
+          }}
         />
-        <div className="">
+        <div className="legend">
           {ageData.map((item, index) => (
-            <div key={index} className="flex ml-2 gap-2">
+            <div key={index} className="flex gap-2 ml-2 items-center">
               <div
-                className="legend-color w-4 h-4 rounded-full mr-2"
+                className="w-4 h-4 rounded-full"
                 style={{ backgroundColor: colorScale[index] }}
               ></div>
-              <span className="text-sm">{item.x}</span>
+              <span className="ml-2 text-sm">{item.x}</span>
             </div>
           ))}
         </div>

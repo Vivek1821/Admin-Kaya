@@ -2,8 +2,12 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import logo from "../assets/Artboard.jpg";
+import {useKindeAuth} from "@kinde-oss/kinde-auth-react";
+
 
 const Sidebar = () => {
+  const { isAuthenticated } = useKindeAuth();
+
   return (
     <div className="p-6">
       <div className="mb-20 flex">
@@ -17,7 +21,8 @@ const Sidebar = () => {
         >
           <div>Dashboard</div>
         </NavLink>
-        <NavLink
+        {isAuthenticated ? <>
+          <NavLink
           to="/users"
           className="users-container border-white p-2 border rounded-md"
         >
@@ -35,6 +40,8 @@ const Sidebar = () => {
         >
           Immigration
         </NavLink>
+        </> : ""}
+       
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { VictoryPie } from "victory";
+import { VictoryPie, VictoryLabel } from "victory";
 import fetchDataAndProcess from "../FetchData/FetchData";
 
 export const ImmigrationTypeChart = () => {
@@ -24,6 +24,17 @@ export const ImmigrationTypeChart = () => {
     fetchImmigrationData();
   }, []);
 
+  // Calculate the total count
+  const getTotalCount = () => {
+    return immigrationData.reduce((acc, item) => acc + item.y, 0);
+  };
+
+  // Calculate the percentage
+  const getPercentage = (count) => {
+    const totalCount = getTotalCount();
+    return ((count / totalCount) * 100).toFixed(2);
+  };
+
   return (
     <div className="chart-container w-60 border-[1px] border-black rounded-xl">
       <div className="chart-title p-2">Immigration Type</div>
@@ -31,7 +42,12 @@ export const ImmigrationTypeChart = () => {
         <VictoryPie
           colorScale={colorScale}
           data={immigrationData}
-          style={{ width: "300px", height: "300px" }}
+          labelRadius={({ innerRadius }) => innerRadius + 20 } // Tune this to position labels inside slices
+          style={{
+            labels: { fill: "white", fontSize: 20, fontWeight: "bold" }, // Adjust label styles as needed
+            parent: { width: "250px", height: "250px" }
+          }}
+          labelComponent={<VictoryLabel text={({ datum }) => `${getPercentage(datum.y)}%`} />}
         />
         <div className="legend">
           {immigrationData.map((item, index) => (

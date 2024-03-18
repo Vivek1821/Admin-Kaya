@@ -8,15 +8,21 @@ import Immigration from "./Sidebar-component/Immigration";
 import Services from "./Sidebar-component/Services";
 import Users from "./Sidebar-component/Users";
 import "./App.css";
+import {useKindeAuth} from "@kinde-oss/kinde-auth-react";
+
 
 function App() {
+  const { isAuthenticated } = useKindeAuth();
   return (
     <div className="app-container ">
-      <div className="sidebar fixed h-full w-1/5">
+       <div className="sidebar fixed h-full w-1/5">
         <Sidebar />
       </div>
 
       <div className="content flex flex-col">
+        <div>
+          <Home />
+        </div>
         <div className="sub-content">
           <Routes>
             <Route path="/" element={<Dashboard />} />
@@ -26,6 +32,7 @@ function App() {
           </Routes>
         </div>
       </div>
+     
     </div>
   );
 }

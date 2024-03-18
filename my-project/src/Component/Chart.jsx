@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { VictoryPie } from "victory";
+import { VictoryPie , VictoryLabel} from "victory";
 import CardContainer from "./CardContainer";
 import AppointmentData from "./AppointmentData";
 import { AgeGroupChart } from "./Charts/AgeChart";
@@ -48,16 +48,34 @@ const Chart = () => {
     fetchData();
   }, []);
 
+  const getTotalCount = () => {
+    return serviceData.reduce((acc, item) => acc + item.y, 0);
+  };
+
+  const getPercentage = (count) => {
+    const totalCount = getTotalCount() / 100;
+    return ((count / totalCount)).toFixed(2);
+  };
+
   return (
     <div className="flex justify-start w-80 h-[80-vh] gap-2">
-      <div className="bg-white rounded-lg shadow-2xl p-6 border-[1px] border-black mb-2">
+      <div className="bg-white rounded-lg shadow-2xl p-6 border-[1px] border-black mb-2 h-[70vh]">
         <div className="text-xl font-bold mb-4">Service</div>
         <div className="flex flex-col">
           <div className="w-72">
             <VictoryPie
               colorScale={colorScale}
               data={serviceData}
-              style={{ width: "300px", height: "300px" }}
+              labelRadius={({ innerRadius }) => innerRadius + 10}
+              labelComponent={
+                <VictoryLabel
+                  text={({ datum }) => `${getPercentage(datum.y)}%`}
+                />
+              }
+              style={{ 
+                labels: { fill: "white", fontSize: 20, fontWeight: "bold" },
+                parent: { width: "300px", height: "300px" }
+              }}
             />
           </div>
           <div className="ml-8 items-start">
@@ -73,7 +91,7 @@ const Chart = () => {
           </div>
         </div>
       </div>
-      <div className="w-[50vw] gap-4 ">
+      <div className="w-[52vw] gap-4 ">
         {/* <CardContainer /> */}
         <div className="flex gap-2 ml-4 mb-4">
           <ImmigrationTypeChart />
